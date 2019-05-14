@@ -14,7 +14,7 @@ func TestPaymentSrv_CancelExistingAuthorization(t *testing.T) {
 	assertions := assert.New(t)
 	setupMux(
 		assertions,
-		"/credit/v1/authorizations/abc",
+		"/payments/v1/authorizations/abc",
 		nil,
 		http.MethodDelete,
 		nil,
@@ -41,7 +41,7 @@ func TestPaymentSrv_CreateNewOrder(t *testing.T) {
 	}
 	setupMux(
 		assertions,
-		"/credit/v1/authorizations/abc/order",
+		"/payments/v1/authorizations/abc/order",
 		request,
 		http.MethodPost,
 		mockedResponse,
@@ -63,7 +63,7 @@ func TestPaymentSrv_UpdateExistingSession(t *testing.T) {
 	assertions := assert.New(t)
 	setupMux(
 		assertions,
-		"/credit/v1/sessions/1a2b",
+		"/payments/v1/sessions/1a2b",
 		request,
 		http.MethodPost,
 		nil,
@@ -106,7 +106,7 @@ func TestPaymentSrv_CreateNewSession(t *testing.T) {
 	// mock the server response
 	setupMux(
 		assertions,
-		"/credit/v1/sessions",
+		"/payments/v1/sessions",
 		request,
 		http.MethodPost,
 		mockedRes,

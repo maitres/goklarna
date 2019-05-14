@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	paymentSessionApiURL = "/credit/v1/sessions"
-	paymentOrdersApiURL  = "/credit/v1/authorizations"
+	paymentSessionApiURL = "/payments/v1/sessions"
+	paymentOrdersApiURL  = "/payments/v1/authorizations"
 )
 
 type (
