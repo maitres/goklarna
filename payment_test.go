@@ -1,4 +1,4 @@
-package go_klarna
+package goklarna
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -94,7 +94,7 @@ func TestPaymentSrv_CreateNewSession(t *testing.T) {
 		},
 		OrderAmount:    4,
 		OrderTaxAmount: 6,
-		OrderLines: []*Line{
+		OrderLines: []*OrderLine{
 			{
 				Name:        "line 1",
 				Quantity:    3,

@@ -1,9 +1,10 @@
-package go_klarna
+package goklarna
 
 import (
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCheckoutSrv_CreateNewOrder(t *testing.T) {
@@ -80,7 +81,7 @@ var mockedResponse = &CheckoutOrder{
 	Locale:           "en-US",
 	OrderAmount:      0,
 	OrderTaxAmount:   0,
-	OrderLines: []*Line{
+	OrderLines: []*OrderLine{
 		{
 			Name:           "line 1",
 			Quantity:       3,

@@ -1,4 +1,4 @@
-package go_klarna
+package goklarna
 
 import (
 	"encoding/json"
@@ -58,7 +58,7 @@ type (
 		RemainingAuthorizedAmount int                      `json:"remaining_authorized_amount,omitempty"`
 		PurchaseCurrency          string                   `json:"purchase_currency,omitempty"`
 		Locale                    string                   `json:",omitempty"`
-		OrderLines                []*Line                  `json:"order_lines,omitempty"`
+		OrderLines                []*OrderLine             `json:"order_lines,omitempty"`
 		MerchantReference1        string                   `json:"merchant_reference1,omitempty"`
 		MerchantReference2        string                   `json:"merchant_reference2,omitempty"`
 		KlarnaReference           string                   `json:"klarna_reference"`
@@ -84,7 +84,7 @@ type (
 		CaptureAmount   int                          `json:"capture_amount,omitempty"`
 		CapturedAt      string                       `json:"captured_at,omitempty"` // DateTime string of ISO 8601
 		Description     string                       `json:"description,omitempty"`
-		OrderLines      []*Line                      `json:"order_lines,omitempty"`
+		OrderLines      []*OrderLine                 `json:"order_lines,omitempty"`
 		RefundedAmount  int                          `json:"refunded_amount,omitempty"`
 		BillingAddress  *Address                     `json:"billing_address,omitempty"`
 		ShippingAddress *Address                     `json:"shipping_address,omitempty"`
@@ -102,22 +102,22 @@ type (
 	}
 
 	OrderManagementRefund struct {
-		RefundAmount int     `json:"refund_amount,omitempty"`
-		RefundedAt   string  `json:"refunded_at,omitempty"` // DateTime string of ISO 8601
-		Description  string  `json:"description,omitempty"`
-		OrderLines   []*Line `json:"order_lines,omitempty"`
+		RefundAmount int          `json:"refund_amount,omitempty"`
+		RefundedAt   string       `json:"refunded_at,omitempty"` // DateTime string of ISO 8601
+		Description  string       `json:"description,omitempty"`
+		OrderLines   []*OrderLine `json:"order_lines,omitempty"`
 	}
 
 	OrderAmountLines struct {
-		OrderAmount int     `json:"order_amount"`
-		Description string  `json:"description,omitempty"`
-		OrderLines  []*Line `json:"order_lines,omitempty"`
+		OrderAmount int          `json:"order_amount"`
+		Description string       `json:"description,omitempty"`
+		OrderLines  []*OrderLine `json:"order_lines,omitempty"`
 	}
 
 	AdjustAmountLines struct {
-		AdjustAmount int     `json:"adjust_amount"`
-		Description  string  `json:"description,omitempty"`
-		OrderLines   []*Line `json:"order_lines,omitempty"`
+		AdjustAmount int          `json:"adjust_amount"`
+		Description  string       `json:"description,omitempty"`
+		OrderLines   []*OrderLine `json:"order_lines,omitempty"`
 	}
 
 	CustomerAddress struct {
@@ -133,7 +133,7 @@ type (
 	CreateCapture struct {
 		CapturedAmount int                            `json:"captured_amount"`
 		Description    string                         `json:"description,omitempty"`
-		OrderLines     []*Line                        `json:"order_lines,omitempty"`
+		OrderLines     []*OrderLine                   `json:"order_lines,omitempty"`
 		ShippingInfo   []*OrderManagementShippingInfo `json:"shipping_info,omitempty"`
 		ShippingDelay  int                            `json:"shipping_delay,omitempty"`
 	}

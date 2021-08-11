@@ -1,4 +1,4 @@
-package go_klarna
+package goklarna
 
 import (
 	"encoding/json"
@@ -9,6 +9,7 @@ const (
 
 	// Line types
 	PhysicalLineType    LineType = "physical"
+	DigitalLineType              = "digital"
 	DiscountLineType             = "discount"
 	ShippingFeeLineType          = "shipping_fee"
 	SalesTaxLineType             = "sales_tax"
@@ -40,7 +41,7 @@ type (
 		ShippingAddress        *Address              `json:"shipping_address,omitempty"`
 		OrderAmount            int                   `json:"order_amount"`
 		OrderTaxAmount         int                   `json:"order_tax_amount"`
-		OrderLines             []*Line               `json:"order_lines"`
+		OrderLines             []*OrderLine          `json:"order_lines"`
 		Customer               *CheckoutCustomer     `json:"customer,omitempty"`
 		MerchantURLS           *CheckoutMerchantURLS `json:"merchant_urls"`
 		HTMLSnippet            string                `json:"html_snippet,omitempty"`
@@ -175,7 +176,7 @@ type (
 		Country        string `json:"country,omitempty"`
 	}
 
-	Line struct {
+	OrderLine struct {
 		Type                string `json:"type,omitempty"`
 		Reference           string `json:"reference,omitempty"`
 		Name                string `json:"name"`

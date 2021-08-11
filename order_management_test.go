@@ -1,4 +1,4 @@
-package go_klarna
+package goklarna
 
 import (
 	"github.com/stretchr/testify/assert"

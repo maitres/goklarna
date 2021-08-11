@@ -1,4 +1,4 @@
-package go_klarna
+package goklarna
 
 import (
 	"encoding/json"
@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	paymentSessionApiURL = "/payments/v1/sessions"
-	paymentOrdersApiURL  = "/payments/v1/authorizations"
+	paymentSessionApiURL       = "/payments/v1/sessions"
+	paymentAuthorizationApiURL = "/payments/v1/authorizations"
 )
 
 type (
@@ -17,6 +17,7 @@ type (
 		UpdateExistingSession(string, *PaymentOrder) error
 		CreateNewOrder(string, *PaymentOrder) (*PaymentOrderInfo, error)
 		CancelExistingAuthorization(string) error
+		GetCustomerToken(authorizationToken string, r *CustomerTokenRequest) (*CustomerTokenResponse, error)
 	}
 
 	paymentSrv struct {
@@ -25,9 +26,10 @@ type (
 
 	// PaymentOrderInfo type is the response coming back from creating an order in the Payment API
 	PaymentOrderInfo struct {
-		OrderID     string `json:"order_id,omitempty"`
-		RedirectURL string `json:"redirect_url,omitempty"`
-		FraudStatus string `json:"fraud_status,omitempty"`
+		OrderID                 string      `json:"order_id,omitempty"`
+		RedirectURL             string      `json:"redirect_url,omitempty"`
+		FraudStatus             string      `json:"fraud_status,omitempty"`
+		AuthorizedPaymentMethod interface{} `json:"authorized_payment_method"`
 	}
 
 	// SessionResponse type encapsulate the two fields that the API response with when creating a new session
@@ -41,21 +43,24 @@ type (
 	// PaymentOrder type is the request payload to create an order from the Payment API by providing the order
 	// structure and the authorization token
 	PaymentOrder struct {
-		Design             string               `json:"design,omitempty"`
-		PurchaseCountry    string               `json:"purchase_country"`
-		PurchaseCurrency   string               `json:"purchase_currency"`
-		Locale             string               `json:"locale"`
-		BillingAddress     *Address             `json:"billing_address"`
-		ShippingAddress    *Address             `json:"shipping_address,omitempty"`
-		OrderAmount        int                  `json:"order_amount"`
-		OrderTaxAmount     int                  `json:"order_tax_amount"`
-		OrderLines         []*Line              `json:"order_lines"`
-		Customer           *CustomerInfo        `json:"customer,omitempty"`
-		MerchantURLS       *PaymentMerchantURLS `json:"merchant_urls,omitempty"`
-		MerchantReference1 string               `json:"merchant_reference1,omitempty"`
-		MerchantReference2 string               `json:"merchant_reference2,omitempty"`
-		Options            *PaymentOptions      `json:"options,omitempty"`
-		Attachment         *Attachment          `json:"attachment,omitempty"`
+		Design                 string               `json:"design,omitempty"`
+		PurchaseCountry        string               `json:"purchase_country"`
+		PurchaseCurrency       string               `json:"purchase_currency"`
+		Locale                 string               `json:"locale"`
+		BillingAddress         *Address             `json:"billing_address"`
+		ShippingAddress        *Address             `json:"shipping_address,omitempty"`
+		OrderAmount            int                  `json:"order_amount"`
+		OrderTaxAmount         int                  `json:"order_tax_amount"`
+		OrderLines             []*OrderLine         `json:"order_lines"`
+		Customer               *CustomerInfo        `json:"customer,omitempty"`
+		MerchantData           *string              `json:"merchant_data,omitempty"`
+		MerchantURLS           *PaymentMerchantURLS `json:"merchant_urls,omitempty"`
+		MerchantReference1     string               `json:"merchant_reference1,omitempty"`
+		MerchantReference2     string               `json:"merchant_reference2,omitempty"`
+		Options                *PaymentOptions      `json:"options,omitempty"`
+		Attachment             *Attachment          `json:"attachment,omitempty"`
+		AutoCapture            *bool                `json:"auto_capture"`
+		PaymentMethodReference *string              `json:"payment_method_reference"`
 	}
 
 	// PaymentOptions type Options for this purchase
@@ -82,10 +87,37 @@ type (
 
 	// CustomerInfo type is Information about the liable customer of the order
 	CustomerInfo struct {
-		DateOfBirth string `json:"date_of_birth,omitempty"`
-		Gender      string `json:"gender,omitempty"`
-		LastFourSSN string `json:"last_four_ssn,omitempty"`
+		DateOfBirth                  string `json:"date_of_birth,omitempty"`                  // yyyy-mm-dd
+		Gender                       string `json:"gender,omitempty"`                         // 'male' or 'female'
+		LastFourSSN                  string `json:"last_four_ssn,omitempty"`                  // for US customers
+		NationalIdentificationNumber string `json:"national_identification_number,omitempty"` // for EU customers
 	}
+
+	CustomerTokenRequest struct {
+		BillingAddress   *Address      `json:"billing_address"`
+		Customer         *CustomerInfo `json:"customer,omitempty"`
+		Description      string        `json:"description"`
+		IntendedUse      string        `json:"intended_use"`
+		PurchaseCountry  string        `json:"purchase_country"`
+		PurchaseCurrency string        `json:"purchase_currency"`
+		Locale           string        `json:"locale"`
+	}
+
+	CustomerTokenResponse struct {
+		BillingAddress         *Address      `json:"billing_address"`
+		Customer               *CustomerInfo `json:"customer,omitempty"`
+		PaymentMethodReference *string       `json:"payment_method_reference"`
+		RedirectUrl            string        `json:"redirect_url"`
+		TokenId                string        `json:"token_id"`
+	}
+)
+
+const (
+	PurchaseCountrySE = "SE"
+
+	PurchaseCurrencySEK = "SEK"
+
+	LocaleSweden = "sv-SE"
 )
 
 // CreateNewSession method calls payment session api and return an error if there is any, PaymentSession struct
@@ -101,6 +133,19 @@ func (srv *paymentSrv) CreateNewSession(po *PaymentOrder) (*PaymentSession, erro
 	return ps, err
 }
 
+// GetCustomerToken makes query to generate customer token
+func (srv *paymentSrv) GetCustomerToken(authorizationToken string, r *CustomerTokenRequest) (*CustomerTokenResponse, error) {
+	uri := fmt.Sprintf("%s/%s/customer-token", paymentAuthorizationApiURL, authorizationToken)
+	res, err := srv.client.Post(uri, r)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenResp := new(CustomerTokenResponse)
+	err = json.NewDecoder(res.Body).Decode(tokenResp)
+	return tokenResp, err
+}
+
 // UpdateExistingSession method calls update payment session api and return an error if there is any
 func (srv *paymentSrv) UpdateExistingSession(id string, po *PaymentOrder) error {
 	uri := fmt.Sprintf("%s/%s", paymentSessionApiURL, id)
@@ -111,7 +156,7 @@ func (srv *paymentSrv) UpdateExistingSession(id string, po *PaymentOrder) error 
 
 // CreateNewOrder method creates a new payment order with the given token and order
 func (srv *paymentSrv) CreateNewOrder(token string, po *PaymentOrder) (*PaymentOrderInfo, error) {
-	path := fmt.Sprintf("%s/%s/order", paymentOrdersApiURL, token)
+	path := fmt.Sprintf("%s/%s/order", paymentAuthorizationApiURL, token)
 	res, err := srv.client.Post(path, po)
 	if nil != err {
 		return nil, err
@@ -125,7 +170,7 @@ func (srv *paymentSrv) CreateNewOrder(token string, po *PaymentOrder) (*PaymentO
 
 // CancelExistingAuthorization method calls the API end-point
 func (srv *paymentSrv) CancelExistingAuthorization(token string) error {
-	path := fmt.Sprintf("%s/%s", paymentOrdersApiURL, token)
+	path := fmt.Sprintf("%s/%s", paymentAuthorizationApiURL, token)
 	_, err := srv.client.Delete(path)
 
 	return err

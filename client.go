@@ -1,4 +1,4 @@
-package go_klarna
+package goklarna
 
 import (
 	"bytes"
@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	EuroAPI = "https://api.klarna.com/"
-	UsAPI   = "https://api-na.klarna.com/"
+	BaseUrlEuro           = "https://api.klarna.com/"
+	BaseUrlEuroPlayground = "https://api.playground.klarna.com/"
 )
 
 var (
@@ -131,7 +131,7 @@ func (c *client) errorFromResponse(res *http.Response) error {
 // NewClient factory method
 func NewClient(c Config) Client {
 	if nil == c.BaseURL {
-		uri, _ := url.Parse(EuroAPI)
+		uri, _ := url.Parse(BaseUrlEuro)
 		c.BaseURL = uri
 	}
 	if 0 == c.Timeout {
@@ -144,4 +144,8 @@ func NewClient(c Config) Client {
 			Timeout: c.Timeout,
 		},
 	}
+}
+
+func Bool(v bool) *bool {
+	return &v
 }
