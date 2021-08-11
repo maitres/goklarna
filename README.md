@@ -26,7 +26,7 @@ Is the abstraction of `HTTP` client, required by each service in order to operat
 
 ```go
 import (
-        klarna "github.com/maitres/go-klarna"
+        klarna "github.com/maitres/goklarna"
         "net/url"
         "time"
 )
