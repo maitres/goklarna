@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -18,8 +19,6 @@ const (
 )
 
 var (
-	// ErrOrderCreate error describes that Klarna API is refusing to create the order
-	ErrOrderCreate = errors.New("unable to create an order, some fields constraint was violated")
 	// ErrUnAuthorized error describes that you are not authorized to perform such an operation
 	ErrUnAuthorized = errors.New("You were not unauthorized to execute this operation")
 	// ErrReadOnlyResource error describes that the target can not be modified
@@ -113,7 +112,11 @@ func (c *client) errorFromResponse(res *http.Response) error {
 	if res.StatusCode > 299 {
 		switch res.StatusCode {
 		case http.StatusBadRequest:
-			return ErrOrderCreate
+			b, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				return err
+			}
+			return errors.New(string(b))
 		case http.StatusUnauthorized:
 			return ErrUnAuthorized
 		case http.StatusForbidden:
