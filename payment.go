@@ -61,6 +61,7 @@ type (
 		Attachment             *Attachment          `json:"attachment,omitempty"`
 		AutoCapture            *bool                `json:"auto_capture"`
 		PaymentMethodReference *string              `json:"payment_method_reference"`
+		Intent                 *string              `json:"intent"`
 	}
 
 	// PaymentOptions type Options for this purchase
@@ -101,6 +102,9 @@ type (
 		PurchaseCountry  string        `json:"purchase_country"`
 		PurchaseCurrency string        `json:"purchase_currency"`
 		Locale           string        `json:"locale"`
+		MerchantUrls     struct {
+			Confirmation string `json:"confirmation"`
+		} `json:"merchant_urls"`
 	}
 
 	CustomerTokenResponse struct {

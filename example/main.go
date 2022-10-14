@@ -28,6 +28,7 @@ func main() {
 func createNewSession(client goklarna.Client) {
 	pmsrv := goklarna.NewPaymentSrv(client)
 
+	intent := "tokenize"
 	s, err := pmsrv.CreateNewSession(&goklarna.PaymentOrder{
 		PurchaseCountry:  goklarna.PurchaseCountrySE,
 		PurchaseCurrency: goklarna.PurchaseCurrencySEK,
@@ -46,6 +47,7 @@ func createNewSession(client goklarna.Client) {
 			DateOfBirth:                  "1985-09-06",
 			NationalIdentificationNumber: "850906-4583",
 		},
+		Intent: &intent,
 	})
 
 	if err != nil {
