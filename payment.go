@@ -66,18 +66,20 @@ type (
 
 	// PaymentOptions type Options for this purchase
 	PaymentOptions struct {
-		ColorButton            string `json:"color_button,omitempty"`
-		ColorButtonText        string `json:"color_button_text,omitempty"`
-		ColorCheckbox          string `json:"color_checkbox,omitempty"`
-		ColorCheckboxCheckmark string `json:"color_checkbox_checkmark,omitempty"`
-		ColorHeader            string `json:"color_header,omitempty"`
-		ColorLink              string `json:"color_link,omitempty"`
-		ColorBorder            string `json:"color_border,omitempty"`
-		ColorBorderSelected    string `json:"color_border_selected,omitempty"`
-		ColorText              string `json:"color_text,omitempty"`
-		ColorDetails           string `json:"color_details,omitempty"`
-		ColorTextSecondary     string `json:"color_text_secondary,omitempty"`
-		RadiusBorder           string `json:"radius_border,omitempty"`
+		ColorButton              string `json:"color_button,omitempty"`
+		ColorButtonText          string `json:"color_button_text,omitempty"`
+		ColorCheckbox            string `json:"color_checkbox,omitempty"`
+		ColorCheckboxCheckmark   string `json:"color_checkbox_checkmark,omitempty"`
+		ColorHeader              string `json:"color_header,omitempty"`
+		ColorLink                string `json:"color_link,omitempty"`
+		ColorBorder              string `json:"color_border,omitempty"`
+		ColorBorderSelected      string `json:"color_border_selected,omitempty"`
+		ColorText                string `json:"color_text,omitempty"`
+		ColorDetails             string `json:"color_details,omitempty"`
+		ColorTextSecondary       string `json:"color_text_secondary,omitempty"`
+		RadiusBorder             string `json:"radius_border,omitempty"`
+		AllowPartialAddress      *bool  `json:"allow_partial_address,omitempty"`
+		DisableClientSideUpdates string `json:"disable_client_side_updates,omitempty"`
 	}
 
 	// The merchant urls structure
