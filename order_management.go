@@ -102,10 +102,10 @@ type (
 	}
 
 	OrderManagementRefund struct {
-		RefundAmount int          `json:"refund_amount,omitempty"`
-		RefundedAt   string       `json:"refunded_at,omitempty"` // DateTime string of ISO 8601
-		Description  string       `json:"description,omitempty"`
-		OrderLines   []*OrderLine `json:"order_lines,omitempty"`
+		RefundedAmount int          `json:"refunded_amount,omitempty"`
+		RefundedAt     string       `json:"refunded_at,omitempty"` // DateTime string of ISO 8601
+		Description    string       `json:"description,omitempty"`
+		OrderLines     []*OrderLine `json:"order_lines,omitempty"`
 	}
 
 	OrderAmountLines struct {
