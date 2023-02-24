@@ -3,7 +3,6 @@ package goklarna
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -16,17 +15,6 @@ import (
 const (
 	BaseUrlEuro           = "https://api.klarna.com/"
 	BaseUrlEuroPlayground = "https://api.playground.klarna.com/"
-)
-
-var (
-	// ErrUnAuthorized error describes that you are not authorized to perform such an operation
-	ErrUnAuthorized = errors.New("You were not unauthorized to execute this operation")
-	// ErrReadOnlyResource error describes that the target can not be modified
-	ErrReadOnlyResource = errors.New("You tried to modify a read only resource")
-	// ErrOrderNotFound error describes that there are no resource found with a provided id
-	ErrOrderNotFound = errors.New("No orders found with given ID")
-	// ServiceUnavailable error describes any non-classified error response, e.g. 500 status codes
-	ServiceUnavailable = errors.New("service temporary unavailable")
 )
 
 // Config type is the basic configurations required from the client to provide in order to function
@@ -109,26 +97,20 @@ func (c *client) do(method string, path string, body interface{}) (*http.Respons
 
 // errorFromResponse method translates the sent status code into an internal error
 func (c *client) errorFromResponse(res *http.Response) error {
-	if res.StatusCode > 299 {
-		switch res.StatusCode {
-		case http.StatusBadRequest:
-			b, err := ioutil.ReadAll(res.Body)
-			if err != nil {
-				return err
-			}
-			return errors.New(string(b))
-		case http.StatusUnauthorized:
-			return ErrUnAuthorized
-		case http.StatusForbidden:
-			return ErrReadOnlyResource
-		case http.StatusNotFound:
-			return ErrOrderNotFound
-		default:
-			return ServiceUnavailable
-		}
+	if res.StatusCode < 300 {
+		return nil
 	}
 
-	return nil
+	// Read the body
+	b, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	return &Error{
+		Code:    res.StatusCode,
+		Message: string(b),
+	}
 }
 
 // NewClient factory method
@@ -151,4 +133,13 @@ func NewClient(c Config) Client {
 
 func Bool(v bool) *bool {
 	return &v
+}
+
+type Error struct {
+	Code    int
+	Message string
+}
+
+func (e *Error) Error() string {
+	return fmt.Sprintf("%d: %s", e.Code, e.Message)
 }
