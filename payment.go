@@ -94,6 +94,7 @@ type (
 		Gender                       string `json:"gender,omitempty"`                         // 'male' or 'female'
 		LastFourSSN                  string `json:"last_four_ssn,omitempty"`                  // for US customers
 		NationalIdentificationNumber string `json:"national_identification_number,omitempty"` // for EU customers
+		KlarnaAccessToken            string `json:"klarna_access_token,omitempty"`
 	}
 
 	CustomerTokenRequest struct {
