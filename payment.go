@@ -98,7 +98,7 @@ type (
 	}
 
 	CustomerTokenRequest struct {
-		BillingAddress   *Address      `json:"billing_address"`
+		BillingAddress   *Address      `json:"billing_address,omitempty"`
 		Customer         *CustomerInfo `json:"customer,omitempty"`
 		Description      string        `json:"description"`
 		IntendedUse      string        `json:"intended_use"`
