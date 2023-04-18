@@ -124,8 +124,16 @@ const (
 
 	PurchaseCurrencySEK = "SEK"
 
-	LocaleSweden = "sv-SE"
+	LocaleSwedish = "sv-SE"
+	LocaleEnglish = "en-SE"
 )
+
+func GetLocale(input string) string {
+	if input == "sv" {
+		return LocaleSwedish
+	}
+	return LocaleEnglish
+}
 
 // CreateNewSession method calls payment session api and return an error if there is any, PaymentSession struct
 // is returned on success

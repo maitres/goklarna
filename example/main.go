@@ -32,7 +32,7 @@ func createNewSession(client goklarna.Client) {
 	s, err := pmsrv.CreateNewSession(&goklarna.PaymentOrder{
 		PurchaseCountry:  goklarna.PurchaseCountrySE,
 		PurchaseCurrency: goklarna.PurchaseCurrencySEK,
-		Locale:           goklarna.LocaleSweden,
+		Locale:           goklarna.LocaleSwedish,
 		OrderAmount:      1000,
 		OrderLines: []*goklarna.OrderLine{
 			{
@@ -73,7 +73,7 @@ func generateCustomerToken(client goklarna.Client) {
 			IntendedUse:      "SUBSCRIPTION",
 			PurchaseCountry:  goklarna.PurchaseCountrySE,
 			PurchaseCurrency: goklarna.PurchaseCurrencySEK,
-			Locale:           goklarna.LocaleSweden,
+			Locale:           goklarna.LocaleSwedish,
 		}
 	)
 
@@ -88,7 +88,7 @@ func placeOrderByCustomerToken(client goklarna.Client) {
 	order, err := toksrv.CreateNewOrder("b3acb3a2-79c7-4ad9-880d-abc06e3968f0", &goklarna.PaymentOrder{
 		PurchaseCountry:  goklarna.PurchaseCountrySE,
 		PurchaseCurrency: goklarna.PurchaseCurrencySEK,
-		Locale:           goklarna.LocaleSweden,
+		Locale:           goklarna.LocaleSwedish,
 		OrderAmount:      10000,
 		OrderLines: []*goklarna.OrderLine{
 			{
