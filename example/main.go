@@ -12,6 +12,7 @@ import (
 func main() {
 
 	u, _ := url.Parse(goklarna.BaseUrlEuroPlayground)
+	//u, _ := url.Parse(goklarna.BaseUrlEuro)
 
 	c := goklarna.NewClient(goklarna.Config{
 		BaseURL:     u,
@@ -23,6 +24,7 @@ func main() {
 	createNewSession(c)
 	//generateCustomerToken(c)
 	//placeOrderByCustomerToken(c)
+	//getLast250Disputes(c)
 }
 
 func createNewSession(client goklarna.Client) {
@@ -109,4 +111,9 @@ func placeOrderByCustomerToken(client goklarna.Client) {
 
 	fmt.Println(err)
 	fmt.Println(order)
+}
+
+func getLast250Disputes(client goklarna.Client) {
+	dissrv := goklarna.NewDisputeSrv(client)
+	fmt.Println(dissrv.GetLast250Disputes())
 }
