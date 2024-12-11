@@ -84,8 +84,9 @@ type (
 
 	// The merchant urls structure
 	PaymentMerchantURLS struct {
-		Confirmation string `json:"confirmation"`
-		Notification string `json:"notification,omitempty"`
+		Confirmation  string `json:"confirmation"`
+		Notification  string `json:"notification,omitempty"`
+		Authorization string `json:"authorization,omitempty"`
 	}
 
 	// CustomerInfo type is Information about the liable customer of the order
