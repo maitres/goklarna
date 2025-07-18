@@ -6,13 +6,15 @@ import (
 )
 
 const (
-	customerTokenApiURL = "/customer-token/v1/tokens"
+	customerTokenApiURL       = "/customer-token/v1/tokens"
+	customerTokenStatusApiURL = "/customer-token/v1/tokens/%s/status"
 )
 
 type (
 	// TokenSrv type describe the token api client methods
 	TokenSrv interface {
 		CreateNewOrder(token string, po *PaymentOrder) (*PaymentOrderInfo, error)
+		CancelCustomerToken(token string) error
 	}
 
 	tokenSrv struct {
@@ -32,6 +34,15 @@ func (srv *tokenSrv) CreateNewOrder(token string, po *PaymentOrder) (*PaymentOrd
 	err = json.NewDecoder(res.Body).Decode(pof)
 
 	return pof, err
+}
+
+func (srv *tokenSrv) CancelCustomerToken(token string) error {
+	path := fmt.Sprintf(customerTokenStatusApiURL, token)
+	_, err := srv.client.Patch(path, map[string]string{
+		"status": "CANCELLED",
+	})
+
+	return err
 }
 
 // NewTokenSrv Return a new token instance while providing
